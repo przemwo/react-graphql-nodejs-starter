@@ -1,7 +1,12 @@
 const graphql = require('graphql');
 const axios = require('axios');
 
-const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;
+const {
+    GraphQLObjectType,
+    GraphQLString,
+    GraphQLSchema,
+    GraphQLID
+} = graphql;
 
 // Three elements:
 // types / relationships between types / root query
@@ -10,9 +15,19 @@ const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;
 const PostType = new GraphQLObjectType({
     name: 'Post',
     fields: () => ({
-        id: { type: GraphQLString },
+        id: { type: GraphQLID },
         title: { type: GraphQLString },
         body: { type: GraphQLString }
+    })
+});
+
+const UserType = new GraphQLObjectType({
+    name: 'User',
+    fields: () =>({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        username: { type: GraphQLString },
+        email: { type: GraphQLString }
     })
 });
 
@@ -22,11 +37,29 @@ const RootQuery = new GraphQLObjectType({
     fields: {
         post: {
             type: PostType,
-            args: { id: { type: GraphQLString } },
+            args: { id: { type: GraphQLID } },
             resolve(parent, args) {
                 return axios.get(`https://jsonplaceholder.typicode.com/posts/${args.id}`)
                     .then((response) => {
                         if(!(response.status >= 200 && response.status < 300)) {
+                            // handling data fetching errors
+                            // return Promise.reject({...})
+                        }
+                        return response.data;
+                    })
+                    .catch((error) => {
+                        // handling errors
+                        // return Promise.reject({...})
+                    });
+            }
+        },
+        user: {
+            type: UserType,
+            args: { id: { type: GraphQLID } },
+            resolve(parent, args) {
+                return axios.get(`https://jsonplaceholder.typicode.com/users/${args.id}`)
+                    .then((response) => {
+                        if(!(response.status >=200 && response.status <300)) {
                             // handling data fetching errors
                             // return Promise.reject({...})
                         }
