@@ -17,7 +17,24 @@ const PostType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         title: { type: GraphQLString },
-        body: { type: GraphQLString }
+        body: { type: GraphQLString },
+        user: {
+            type: UserType,
+            resolve(parent, args) {
+                return axios.get(`https://jsonplaceholder.typicode.com/users/${parent.userId}`)
+                    .then((response) => {
+                        if(!(response.status >= 200 && response.status < 300)) {
+                            // handling data fetching errors
+                            // return Promise.reject({...})
+                        }
+                        return response.data;
+                    })
+                    .catch(
+                        // handling errors
+                        // return Promise.reject({...})
+                    );
+            }
+        }
     })
 });
 
@@ -35,6 +52,13 @@ const UserType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
+        greet: {
+            type: GraphQLString,
+            args: { name: { type: GraphQLString } },
+            resolve(parent, args) {
+                return `Hello ${args.name || 'world'}!`;
+            }
+        },
         post: {
             type: PostType,
             args: { id: { type: GraphQLID } },
