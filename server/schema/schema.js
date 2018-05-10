@@ -35,6 +35,13 @@ const UserType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQuery',
     fields: {
+        greet: {
+            type: GraphQLString,
+            args: { name: { type: GraphQLString } },
+            resolve(parent, args) {
+                return `Hello ${args.name || 'world'}!`;
+            }
+        },
         post: {
             type: PostType,
             args: { id: { type: GraphQLID } },
