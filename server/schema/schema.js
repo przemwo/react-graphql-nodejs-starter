@@ -5,7 +5,8 @@ const {
     GraphQLObjectType,
     GraphQLString,
     GraphQLSchema,
-    GraphQLID
+    GraphQLID,
+    GraphQLList
 } = graphql;
 
 // Three elements:
@@ -44,7 +45,24 @@ const UserType = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
         username: { type: GraphQLString },
-        email: { type: GraphQLString }
+        email: { type: GraphQLString },
+        posts: {
+            type: new GraphQLList(PostType),
+            resolve(parent, args) {
+                return axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${parent.id}`)
+                    .then((response) => {
+                        if(!(response.status >= 200 && response.status < 300)) {
+                            // handling data fetching errors
+                            // return Promise.reject({...})
+                        }
+                        return response.data;
+                    })
+                    .catch(
+                        // handling errors
+                        // return Promise.reject({...})
+                    );
+            }
+        }
     })
 });
 
