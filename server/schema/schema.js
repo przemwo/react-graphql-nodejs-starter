@@ -150,6 +150,34 @@ const RootQuery = new GraphQLObjectType({
     }
 });
 
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addUser: {
+            type: UserType,
+            args: {
+                name: { type: GraphQLString },
+                username: { type: GraphQLString },
+                email: { type: GraphQLString }
+            },
+            resolve(parent, args) {
+                const user = {
+                    name: args.name,
+                    username: args.username,
+                    email: args.email
+                }
+                return axios.post(`https://jsonplaceholder.typicode.com/users`, user)
+                    .then((response) => {
+                        return response.data;
+                    })
+                    .catch((error) => {
+                    });
+            }
+        }
+    }
+});
+
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: Mutation
 });
