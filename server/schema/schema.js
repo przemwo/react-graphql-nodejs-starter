@@ -112,6 +112,40 @@ const RootQuery = new GraphQLObjectType({
                         // return Promise.reject({...})
                     });
             }
+        },
+        posts: {
+            type: new GraphQLList(PostType),
+            resolve(parent, args) {
+                return axios.get(`https://jsonplaceholder.typicode.com/posts`)
+                    .then((response) => {
+                        if(!(response.status >= 200 && response.status < 300)) {
+                            // handling data fetching errors
+                            // return Promise.reject({...})
+                        }
+                        return response.data;
+                    })
+                    .catch(
+                        // handling errors
+                        // return Promise.reject({...})
+                    );
+            }
+        },
+        users: {
+            type: new GraphQLList(UserType),
+            resolve(parent, args) {
+                return axios.get(`https://jsonplaceholder.typicode.com/users`)
+                    .then((response) => {
+                        if(!(response.status >= 200 && response.status < 300)) {
+                            // handling data fetching errors
+                            // return Promise.reject({...})
+                        }
+                        return response.data;
+                    })
+                    .catch(
+                        // handling errors
+                        // return Promise.reject({...})
+                    );
+            }
         }
     }
 });
