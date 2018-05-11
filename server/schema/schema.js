@@ -5,7 +5,8 @@ const {
     GraphQLObjectType,
     GraphQLString,
     GraphQLSchema,
-    GraphQLID
+    GraphQLID,
+    GraphQLList
 } = graphql;
 
 // Three elements:
@@ -44,7 +45,24 @@ const UserType = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
         username: { type: GraphQLString },
-        email: { type: GraphQLString }
+        email: { type: GraphQLString },
+        posts: {
+            type: new GraphQLList(PostType),
+            resolve(parent, args) {
+                return axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${parent.id}`)
+                    .then((response) => {
+                        if(!(response.status >= 200 && response.status < 300)) {
+                            // handling data fetching errors
+                            // return Promise.reject({...})
+                        }
+                        return response.data;
+                    })
+                    .catch(
+                        // handling errors
+                        // return Promise.reject({...})
+                    );
+            }
+        }
     })
 });
 
@@ -94,10 +112,72 @@ const RootQuery = new GraphQLObjectType({
                         // return Promise.reject({...})
                     });
             }
+        },
+        posts: {
+            type: new GraphQLList(PostType),
+            resolve(parent, args) {
+                return axios.get(`https://jsonplaceholder.typicode.com/posts`)
+                    .then((response) => {
+                        if(!(response.status >= 200 && response.status < 300)) {
+                            // handling data fetching errors
+                            // return Promise.reject({...})
+                        }
+                        return response.data;
+                    })
+                    .catch(
+                        // handling errors
+                        // return Promise.reject({...})
+                    );
+            }
+        },
+        users: {
+            type: new GraphQLList(UserType),
+            resolve(parent, args) {
+                return axios.get(`https://jsonplaceholder.typicode.com/users`)
+                    .then((response) => {
+                        if(!(response.status >= 200 && response.status < 300)) {
+                            // handling data fetching errors
+                            // return Promise.reject({...})
+                        }
+                        return response.data;
+                    })
+                    .catch(
+                        // handling errors
+                        // return Promise.reject({...})
+                    );
+            }
+        }
+    }
+});
+
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addUser: {
+            type: UserType,
+            args: {
+                name: { type: GraphQLString },
+                username: { type: GraphQLString },
+                email: { type: GraphQLString }
+            },
+            resolve(parent, args) {
+                const user = {
+                    name: args.name,
+                    username: args.username,
+                    email: args.email
+                }
+                return axios.post(`https://jsonplaceholder.typicode.com/users`, user)
+                    .then((response) => {
+                        return response.data;
+                    })
+                    .catch((error) => {
+                    });
+            }
         }
     }
 });
 
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: Mutation
 });
