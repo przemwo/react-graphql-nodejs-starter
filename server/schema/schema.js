@@ -150,6 +150,7 @@ const RootQuery = new GraphQLObjectType({
     }
 });
 
+// Mutation
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
@@ -170,8 +171,27 @@ const Mutation = new GraphQLObjectType({
                     .then((response) => {
                         return response.data;
                     })
-                    .catch((error) => {
-                    });
+                    .catch((error) => {});
+            }
+        },
+        addPost: {
+            type: PostType,
+            args: {
+                title: { type: GraphQLString },
+                body: { type: GraphQLString },
+                userId: { type: GraphQLID }
+            },
+            resolve(parent, args) {
+                const post = {
+                    title: args.title,
+                    body: args.body,
+                    userId: args.userId
+                };
+                return axios.post(`https://jsonplaceholder.typicode.com/posts`, post)
+                    .then((response) => {
+                        return response.data;
+                    })
+                    .catch((error) => {});
             }
         }
     }
