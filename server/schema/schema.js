@@ -6,7 +6,8 @@ const {
     GraphQLString,
     GraphQLSchema,
     GraphQLID,
-    GraphQLList
+    GraphQLList,
+    GraphQLNonNull
 } = graphql;
 
 // Three elements:
@@ -157,9 +158,9 @@ const Mutation = new GraphQLObjectType({
         addUser: {
             type: UserType,
             args: {
-                name: { type: GraphQLString },
-                username: { type: GraphQLString },
-                email: { type: GraphQLString }
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                username: { type: new GraphQLNonNull(GraphQLString) },
+                email: { type:  new GraphQLNonNull(GraphQLString) }
             },
             resolve(parent, args) {
                 const user = {
@@ -177,9 +178,9 @@ const Mutation = new GraphQLObjectType({
         addPost: {
             type: PostType,
             args: {
-                title: { type: GraphQLString },
-                body: { type: GraphQLString },
-                userId: { type: GraphQLID }
+                title: { type: new GraphQLNonNull(GraphQLString) },
+                body: { type:  new GraphQLNonNull(GraphQLString) },
+                userId: { type: new GraphQLNonNull(GraphQLID) }
             },
             resolve(parent, args) {
                 const post = {
