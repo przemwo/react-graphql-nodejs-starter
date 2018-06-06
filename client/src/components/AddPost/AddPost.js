@@ -1,15 +1,7 @@
 import React from 'react';
-import { gql } from 'apollo-boost';
 import { graphql } from 'react-apollo';
 
-const getUsersQuery = gql`
-    {
-        users {
-            id
-            name
-        }
-    }
-`;
+import { getUsersQuery } from '../../queries';
 
 class AddPost extends React.Component {
     renderUsers = () => {
