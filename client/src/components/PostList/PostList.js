@@ -1,16 +1,7 @@
 import React from 'react';
-import { gql } from 'apollo-boost';
 import { graphql } from 'react-apollo';
 
-const getPostQuery = gql`
-    {
-        posts {
-            id
-            title
-            body
-        }
-    }
-`;
+import { getPostsQuery } from '../../queries';
 
 class PostList extends React.Component {
     renderPosts = () => {
@@ -38,4 +29,4 @@ class PostList extends React.Component {
         );
     }
 }
-export default graphql(getPostQuery)(PostList);
+export default graphql(getPostsQuery)(PostList);
