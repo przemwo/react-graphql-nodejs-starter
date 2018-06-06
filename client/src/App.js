@@ -4,6 +4,7 @@ import { ApolloProvider } from 'react-apollo';
 
 import './App.css';
 import PostList from './components/PostList';
+import AddPost from './components/AddPost';
 
 const client = new ApolloClient({
   uri: 'http://localhost:4000/graphql'
@@ -15,6 +16,7 @@ class App extends Component {
       <ApolloProvider client={client}>
         <div>
           <h1 className="header">Welcome to React-GraphQL-NodeJS starter project!</h1>
+          <AddPost />
           <PostList />
         </div>
       </ApolloProvider>
